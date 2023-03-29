@@ -27,7 +27,30 @@
       </select>
       <input id="slider" type="range" min="0" value="1" max="100" />
       <span id="slider-value-text">4</span>
+      <div class="keyboard"></div>
     </div>
     <script src="./bootstrap.js"></script>
+    <script type="module">
+      const keyboard_array = [
+      1,2,3,4,5
+      ]
+      
+      import { h,Component, render } from "https://esm.sh/preact";
+      import htm from "https://esm.sh/htm";
+      const html = htm.bind(h);
+
+      function Button(props) {
+        return html`<button> Teszt </button>`;
+      }
+
+      function ButtonRow(props) {
+        return html`
+        ${keyboard_array.map((row) => html`
+          <${Button} />
+        `
+      }
+      const app = html`<${ButtonRow} />`;
+      render(app, document.querySelector(".keyboard"));
+    </script>
   </body>
 </html>
