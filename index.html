@@ -47,7 +47,7 @@
         return html`
         ${keyboard_array.map((row) => html`
           <${Button} />
-        `
+        `)
       }
       const app = html`<${ButtonRow} />`;
       render(app, document.querySelector(".keyboard"));
