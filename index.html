@@ -68,11 +68,13 @@
       const canvas = document.getElementById("canvas")
 
       function dispatch_down(x) {
+        x.preventDefault()
         x.target.classList.add("active")
         canvas.dispatchEvent(new CustomEvent('keydown',{'detail': x.target.value}))
       }
 
       function dispatch_up(x) {
+        x.preventDefault()
         x.target.classList.remove("active")
         canvas.dispatchEvent(new CustomEvent('keyup',{'detail': x.target.value}))
       }
