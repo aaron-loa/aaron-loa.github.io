@@ -56,6 +56,7 @@ const tickLoop = () => {
 };
 
 function start() {
+  console.log("start?")
   if (!running) {
     running = true;
     renderInterval = setInterval(renderLoop, 16);
