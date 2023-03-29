@@ -1,6 +1,5 @@
-import * as wasm from "./pkg/chip8-wasm";
+import * as wasm from "chip8-wasm";
 import * as tunes from "./tones.js";
-
 let processor = wasm.Processor.new();
 
 let game_names_all = String.fromCharCode(...processor.get_game_names());
@@ -99,6 +98,9 @@ document.getElementById("current-game").addEventListener("change", (event) => {
 });
 
 canvas.addEventListener("keydown", (event) => {
+  if (event.detail != 0) {
+    event.key = event.detail;
+  }
   if (event.key == "ArrowUp") {
     let slider = document.getElementById("slider");
     slider.stepUp();
@@ -114,7 +116,7 @@ canvas.addEventListener("keydown", (event) => {
     let select = document.getElementById("current-game");
     select.selectedIndex -= 1;
     if (select.selectedIndex === -1) {
-      select.selectedIndex = select.childElementCount - 1 ;
+      select.selectedIndex = select.childElementCount - 1;
     }
     select.dispatchEvent(new Event("change"));
   }
@@ -130,10 +132,13 @@ canvas.addEventListener("keydown", (event) => {
 
   if (event.key == " ") {
     if (running) {
-      document.getElementById("stop-button").dispatchEvent(new Event("mouseup"))
-    }
-    else {
-      document.getElementById("start-button").dispatchEvent(new Event("mouseup"))
+      document
+        .getElementById("stop-button")
+        .dispatchEvent(new Event("mouseup"));
+    } else {
+      document
+        .getElementById("start-button")
+        .dispatchEvent(new Event("mouseup"));
     }
   }
 
@@ -173,7 +178,7 @@ canvas.addEventListener("keydown", (event) => {
   if (event.key == "f") {
     processor.set_key(0x0f);
   }
-  if (event.key == "y") {
+  if (event.key == "y" || event.key == "z") {
     processor.set_key(0x0a);
   }
   if (event.key == "x") {
@@ -187,6 +192,9 @@ canvas.addEventListener("keydown", (event) => {
   }
 });
 canvas.addEventListener("keyup", (event) => {
+  if (event.detail != 0) {
+    event.key = event.detail;
+  }
   if (event.key == "1") {
     processor.clear_key(0x01);
   }
@@ -223,7 +231,7 @@ canvas.addEventListener("keyup", (event) => {
   if (event.key == "f") {
     processor.clear_key(0x0f);
   }
-  if (event.key == "y") {
+  if (event.key == "y" || event.key == "z") {
     processor.clear_key(0x0a);
   }
   if (event.key == "x") {
