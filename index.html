@@ -11,6 +11,26 @@
     canvas:focus {
       border-color: black;
     }
+
+    .keyboard {
+      margin-top: 0.7em;
+      width: 640px;
+    }
+
+    .button-row {
+      width:400px;
+      display:flex;
+      justify-content: space-evenly;
+      margin: 0 auto;
+    }
+
+    .keyboard-button {
+      width: 100%;
+      aspect-ratio:1;
+      font-size: 15px;
+      margin: 6px;
+    }
+
   </style>
   <body>
     <noscript
@@ -20,7 +40,7 @@
     <canvas id="canvas" tabindex="1"></canvas>
     <div>
       <button id="start-button">Start</button>
-      <button id="stop-button">Stop </button>
+      <button id="stop-button">Stop</button>
       <button id="reset-button">Reset</button>
       <select id="current-game">
         Select game
@@ -29,28 +49,45 @@
       <span id="slider-value-text">4</span>
       <div class="keyboard"></div>
     </div>
-    <script src="./bootstrap.js"></script>
     <script type="module">
       const keyboard_array = [
-      1,2,3,4,5
-      ]
-      
-      import { h,Component, render } from "https://esm.sh/preact";
+        ["1", "2", "3", "4"],
+        ["Q", "W", "E", "R"],
+        ["A", "S", "D", "F"],
+        ["Y", "X", "C", "V"],
+      ];
+
+      import { h, Component, render } from "https://esm.sh/preact";
       import htm from "https://esm.sh/htm";
       const html = htm.bind(h);
+      const canvas = document.getElementById("canvas")
 
-      function Button(props) {
-        return html`<button> Teszt </button>`;
+      function dispatch_down(x) {
+        canvas.dispatchEvent(new CustomEvent('keydown',{'detail': x.target.value}))
+      }
+
+      function dispatch_up(x) {
+        canvas.dispatchEvent(new CustomEvent('keyup',{'detail': x.target.value}))
       }
 
       function ButtonRow(props) {
         return html`
-        ${keyboard_array.map((row) => html`
-          <${Button} />
-        `)
+          ${props.row.map(key => html`
+            <button class="keyboard-button" value="${key.toLowerCase()}" onmousedown="${dispatch_down}" onmouseup="${dispatch_up}">${key}</button>
+          `)}
+        `;
       }
-      const app = html`<${ButtonRow} />`;
+
+      function App(props) {
+        return html`
+          ${keyboard_array.map(row => html`
+          <div class="button-row"> <${ButtonRow} row="${row}" /> </div>
+          `)}
+        `;
+      }
+      const app = html`<${App} />`;
       render(app, document.querySelector(".keyboard"));
     </script>
+    <script src="./bootstrap.js"></script>
   </body>
 </html>
