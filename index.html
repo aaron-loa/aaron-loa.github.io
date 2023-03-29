@@ -31,6 +31,11 @@
       margin: 6px;
     }
 
+    .keyboard-button.active {
+      background: #d0d0d7;
+      border: 2px solid grey;
+      border-radius: 3px;
+    }
   </style>
   <body>
     <noscript
@@ -63,17 +68,19 @@
       const canvas = document.getElementById("canvas")
 
       function dispatch_down(x) {
+        x.target.classList.add("active")
         canvas.dispatchEvent(new CustomEvent('keydown',{'detail': x.target.value}))
       }
 
       function dispatch_up(x) {
+        x.target.classList.remove("active")
         canvas.dispatchEvent(new CustomEvent('keyup',{'detail': x.target.value}))
       }
 
       function ButtonRow(props) {
         return html`
           ${props.row.map(key => html`
-            <button class="keyboard-button" value="${key.toLowerCase()}" onmousedown="${dispatch_down}" onmouseup="${dispatch_up}">${key}</button>
+            <button class="keyboard-button" value="${key.toLowerCase()}" onmousedown="${dispatch_down}" onmouseup="${dispatch_up}" ontouchdown="${dispatch_down}" touchup="${dispatch_up}">${key}</button>
           `)}
         `;
       }
@@ -87,6 +94,10 @@
       }
       const app = html`<${App} />`;
       render(app, document.querySelector(".keyboard"));
+      document.querySelectorAll(".keyboard-button").forEach(element => {
+        element.addEventListener("touchstart",dispatch_down,false)
+        element.addEventListener("touchend",dispatch_up,false)
+      })
     </script>
     <script src="./bootstrap.js"></script>
   </body>
