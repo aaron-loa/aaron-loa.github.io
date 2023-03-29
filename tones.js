@@ -1,14 +1,9 @@
 // https://github.com/escottalexander/simpleTones.js
 
 //Create Audio Context
-let AudioContext = window.AudioContext || window.webkitAudioContext;
-let context = new AudioContext();
 
 let o = null;
 let g = null;
-g = context.createGain();
-g.connect(context.destination);
-g.gain.value = 0.0001;
 
 // Plays single tones. Helperfunction for playChord and playTone, but can also be used by itself.
 const playSingleFrequency = (
@@ -16,6 +11,11 @@ const playSingleFrequency = (
   type = "square",
   duration = 0.16
 ) => {
+  let AudioContext = window.AudioContext || window.webkitAudioContext;
+  let context = new AudioContext();
+  g = context.createGain();
+  g.connect(context.destination);
+  g.gain.value = 0.0001;
   o = context.createOscillator();
   o.connect(g);
   o.type = type;
