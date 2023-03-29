@@ -35,7 +35,7 @@ function draw(current) {
   }
 }
 
-let running = true;
+let running = false;
 
 const renderLoop = () => {
   // console.log(performance.now());
@@ -59,7 +59,7 @@ function start() {
   if (!running) {
     running = true;
     renderInterval = setInterval(renderLoop, 16);
-    setTimeout(tickLoop);
+    setTimeout(tickLoop, 0);
   }
 }
 
@@ -71,8 +71,7 @@ function stop() {
 }
 
 let instructions = 4;
-let renderInterval = setInterval(renderLoop, 16);
-setTimeout(tickLoop, 0);
+let renderInterval;
 generate_options();
 
 document.getElementById("slider").addEventListener("input", (event) => {
