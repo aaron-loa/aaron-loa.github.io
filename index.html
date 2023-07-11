@@ -1,33 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>CHIP-8!</title>
   </head>
   <style>
-    canvas {
-      border: 2px solid red;
-    }
-    canvas:focus {
-      border-color: black;
-    }
-
     .keyboard {
       margin-top: 0.7em;
-      width: 640px;
+      width: min(640px, 100%);
     }
 
     .button-row {
-      width:400px;
-      display:flex;
-      justify-content: space-evenly;
+      width: min(100%, 600px);
+      display: flex;
+      justify-content: center;
       margin: 0 auto;
     }
 
     .keyboard-button {
-      width: 100%;
-      aspect-ratio:1;
+      width: max(20%, 120px);
+      aspect-ratio: 1;
       font-size: 15px;
       margin: 6px;
     }
@@ -43,18 +36,41 @@
       >This page contains webassembly and javascript content, please enable
       javascript in your browser.</noscript
     >
-    <canvas id="canvas" tabindex="1"></canvas>
-    <div>
-      <button id="start-button">Start</button>
-      <button id="stop-button">Stop</button>
-      <button id="reset-button">Reset</button>
-      <select id="current-game">
-        Select game
-      </select>
-      <input id="slider" type="range" min="0" value="1" max="100" />
-      <span id="slider-value-text">4</span>
-      <div class="keyboard"></div>
-    </div>
+    <main style="display: flex; flex-wrap: wrap; gap: 12px">
+      <div>
+        <canvas
+          id="canvas"
+          tabindex="1"
+          style="width: min(640px, 100%)"
+        ></canvas>
+        <div>
+          <div class="buttons">
+            <button id="start-button">Start</button>
+            <button id="stop-button">Stop</button>
+            <button id="reset-button">Reset</button>
+            <select id="current-game">
+              Select game
+            </select>
+            <input id="slider" type="range" min="0" value="1" max="100" style="vertical-align:middle"/>
+            <span id="slider-value-text">4</span>
+            <div class="keyboard"></div>
+          </div>
+        </div>
+      </div>
+      <div class="info-container">
+        <basic-info>
+          <p>Jobb-nyíl és Bal-nyíl játékot vált</p>
+          <p>Le-nyíl csökkenti az utasítások számát</p>
+          <p>Fel-nyíl növeli az utasítások számát</p>
+          <p>1234 QWER ASDF YXCV, gombok irányítják a programokat</p>
+        </basic-info>
+        <game-info-container style="display:block;width: 450px;">
+          <p> Program leírás:</p>
+          <game-info>
+          </game-info>
+        </game-info-container>
+      </div>
+    </main>
     <script type="module">
       const keyboard_array = [
         ["1", "2", "3", "4"],
@@ -66,41 +82,60 @@
       import { h, Component, render } from "https://esm.sh/preact";
       import htm from "https://esm.sh/htm";
       const html = htm.bind(h);
-      const canvas = document.getElementById("canvas")
+      const canvas = document.getElementById("canvas");
 
       function dispatch_down(x) {
-        x.preventDefault()
-        x.target.classList.add("active")
-        canvas.dispatchEvent(new CustomEvent('keydown',{'detail': x.target.value}))
+        x.preventDefault();
+        x.target.classList.add("active");
+        document.body.dispatchEvent(
+          new CustomEvent("keydown", { detail: x.target.value })
+        );
       }
 
       function dispatch_up(x) {
-        x.preventDefault()
-        x.target.classList.remove("active")
-        canvas.dispatchEvent(new CustomEvent('keyup',{'detail': x.target.value}))
+        x.preventDefault();
+        x.target.classList.remove("active");
+        document.body.dispatchEvent(
+          new CustomEvent("keyup", { detail: x.target.value })
+        );
       }
 
       function ButtonRow(props) {
         return html`
-          ${props.row.map(key => html`
-            <button class="keyboard-button" value="${key.toLowerCase()}" onmousedown="${dispatch_down}" onmouseup="${dispatch_up}" ontouchdown="${dispatch_down}" touchup="${dispatch_up}">${key}</button>
-          `)}
+          ${props.row.map(
+            (key) => html`
+              <button
+                class="keyboard-button"
+                value="${key.toLowerCase()}"
+                onmousedown="${dispatch_down}"
+                onmouseup="${dispatch_up}"
+                onmouseout="${dispatch_up}"
+                ontouchdown="${dispatch_down}"if
+                touchup="${dispatch_up}"
+                touc
+              >
+                ${key}
+              </button>
+            `
+          )}
         `;
       }
 
       function App(props) {
         return html`
-          ${keyboard_array.map(row => html`
-          <div class="button-row"> <${ButtonRow} row="${row}" /> </div>
-          `)}
+          ${keyboard_array.map(
+            (row) => html`
+              <div class="button-row"><${ButtonRow} row="${row}" /></div>
+            `
+          )}
         `;
       }
       const app = html`<${App} />`;
       render(app, document.querySelector(".keyboard"));
-      document.querySelectorAll(".keyboard-button").forEach(element => {
-        element.addEventListener("touchstart",dispatch_down,false)
-        element.addEventListener("touchend",dispatch_up,false)
-      })
+      document.querySelectorAll(".keyboard-button").forEach((element) => {
+        element.addEventListener("touchstart", dispatch_down, false);
+        element.addEventListener("touchend", dispatch_up, false);
+      });
     </script>
     <script src="./bootstrap.js"></script>
   </body>
